@@ -11,7 +11,7 @@
     <canvas id="covidChart" width="400" height="200"></canvas>
     <script>
         async function fetchData() {
-            const response = await fetch('owid-covid-data-50.csv');
+            const response = await fetch('./owid-covid-data-50.csv');
             const data = await response.text();
             const rows = data.split('\n').slice(1);
             const dates = [];
