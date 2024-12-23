@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COVID-19 Daily New Cases</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>COVID-19 Daily New Cases Worldwide</h1>
+    <canvas id="covidChart" width="400" height="200"></canvas>
+    <script>
+        async function fetchData() {
+            const response = await fetch('owid-covid-data-50.csv');
+            const data = await response.text();
+            const rows = data.split('\n').slice(1);
+            const dates = [];
+            const newCases = [];
+
+            rows.forEach(row => {
+                const cols = row.split(',');
+                const date = cols[3];
+                const newCase = parseFloat(cols[4]) || 0;
+
+                if (date && !isNaN(newCase)) {
+                    dates.push(date);
+                    newCases.push(newCase);
+                }
+            });
+
+            return { dates, newCases };
+        }
+
+        async function createChart() {
+            const data = await fetchData();
+            const ctx = document.getElementById('covidChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.dates,
+                    datasets: [{
+                        label: 'Daily New Cases',
+                        data: data.newCases,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        fill: true,
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: 'day'
+                            }
+                        },
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        createChart();
+    </script>
+</body>
+</html>

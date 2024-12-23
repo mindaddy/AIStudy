@@ -1,4 +1,6 @@
-AWS_ACCESS_KEY_ID= "AKIAXXXXXX"
+import os
+
+AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
 
 def add(x, y):
     return x + y
@@ -11,39 +13,47 @@ def multiply(x, y):
 
 def divide(x, y):
     if y == 0:
-        return "Error! Division by zero."
-    else:
-        return x / y
+        raise ValueError("Error! Division by zero.")
+    return x / y
 
-print("Select operation.")
-print("1.Add")
-print("2.Subtract")
-print("3.Multiply")
-print("4.Divide")
+def get_user_choice():
+    print("Select operation.")
+    print("1.Add")
+    print("2.Subtract")
+    print("3.Multiply")
+    print("4.Divide")
+    return input("Enter choice(1/2/3/4): ")
 
-while True:
-    choice = input("Enter choice(1/2/3/4): ")
+def get_numbers():
+    num1 = float(input("Enter first number: "))
+    num2 = float(input("Enter second number: "))
+    return num1, num2
 
-    if choice in ('1', '2', '3', '4'):
-        num1 = float(input("Enter first number: "))
-        num2 = float(input("Enter second number: "))
+def main():
+    while True:
+        choice = get_user_choice()
 
-        if choice == '1':
-            print(num1, "+", num2, "=", add(num1, num2))
+        if choice in ('1', '2', '3', '4'):
+            num1, num2 = get_numbers()
 
-        elif choice == '2':
-            print(num1, "-", num2, "=", subtract(num1, num2))
+            if choice == '1':
+                print(num1, "+", num2, "=", add(num1, num2))
+            elif choice == '2':
+                print(num1, "-", num2, "=", subtract(num1, num2))
+            elif choice == '3':
+                print(num1, "*", num2, "=", multiply(num1, num2))
+            elif choice == '4':
+                try:
+                    result = divide(num1, num2)
+                    print(num1, "/", num2, "=", result)
+                except ValueError as e:
+                    print(e)
 
-        elif choice == '3':
-            print(num1, "*", num2, "=", multiply(num1, num2))
+            next_calculation = input("Let's do next calculation? (yes/no): ")
+            if next_calculation.lower() != 'yes':
+                break
+        else:
+            print("Invalid Input")
 
-        elif choice == '4':
-            result = divide(num1, num2)
-            print(num1, "/", num2, "=", result)
-
-        next_calculation = input("Let's do next calculation? (yes/no): ")
-        if next_calculation.lower() != 'yes':
-            break
-
-    else:
-        print("Invalid Input")
+if __name__ == "__main__":
+    main()
